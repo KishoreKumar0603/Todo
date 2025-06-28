@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  font-weight: 400;
+  font-style: normal;
+
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+
+
+:root {
+  --theme-prim-blue: #202d48;
+  --theme-prim-white: #ffffff;
+  --theme-prim-dark: #000000;
+  --theme-sec-lavender: #C4D0EB;
+  --theme-sec-l-lavender: #f2f6ff;
+  --theme-sec-teal: #17a2b8;
+  --theme-sec-yellow: #ffc107;
+  --theme-sec-green: #8bc34a;
+  --theme-sec-d-blue: #334977;
+  --theme-sec-d-grey: #535353;
+  --theme-sec-l-grey: #9d9d9f;
+}
+
+.bold-link {
+  color: var(--theme-prim-blue) !important;
+  font-weight: bolder;
+}
+
+.btn-primary-theme {
+  background-color: var(--theme-prim-blue) !important;
+  color: var(--theme-prim-white) !important;
+}

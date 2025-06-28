@@ -1,0 +1,13 @@
+.box {
+  width: 100%;
+  border: 2px solid var(--theme-sec-lavender);
+
+  max-width: 400px;
+  border-radius: 10px;
+  background-color: var(--theme-sec-lavender);
+}
+
+.alert-login{
+     font-size: 10px !important;
+     color: rgb(208, 15, 15);
+}
