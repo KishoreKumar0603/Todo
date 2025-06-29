@@ -6,10 +6,15 @@ import Topbar from "../assets/components/Topbar";
 import TaskGrid from "../assets/components/TaskGrid";
 import AddTaskModal from "../assets/components/AddTaskModal";
 import CalendarWidget from "../assets/components/CalendarWidget";
+import Overview from "./Overview.jsx";
+import DueTodayComponent from "./DueTodayComponent.jsx";
+import HighPriorityComponent from "./HighPriorityComponent.jsx";
+import OverdueComponent from "./OverdueComponent.jsx";
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [currentTask, setCurrentTask] = useState(null);
+  const [currentView, setCurrentView] = useState("dashboard"); // default view
 
   const fetchTasks = async () => {
     try {
@@ -66,19 +71,60 @@ const Dashboard = () => {
 
   return (
     <div className="d-flex">
-      <Sidebar />
+      <Sidebar onSelectView={setCurrentView} />
       <div className="flex-grow-1">
         <Topbar onAddTask={handleAddTask} />
         <div className="container-fluid mt-3">
           <div className="row">
             <div className="col-lg-9">
-              <TaskGrid
-                tasks={tasks}
-                onAddTask={handleAddTask}
-                onDeleteTask={handleDeleteTask}
-                onEditTask={handleEditTask}
-              />
+              {currentView === "dashboard" && (
+                <TaskGrid
+                  tasks={tasks}
+                  onAddTask={handleAddTask}
+                  onDeleteTask={handleDeleteTask}
+                  onEditTask={handleEditTask}
+                />
+              )}
+
+              {currentView === "overview" && (
+                <Overview
+                  tasks={tasks}
+                  onEditTask={handleEditTask}
+                  onDeleteTask={handleDeleteTask}
+                />
+              )}
+
+              {currentView === "dueToday" && (
+                <DueTodayComponent
+                  tasks={tasks.filter((task) => {
+                    const today = new Date().toISOString().split("T")[0];
+                    return task.dueDate === today;
+                  })}
+                  onEditTask={handleEditTask}
+                  onDeleteTask={handleDeleteTask}
+                />
+              )}
+
+              {currentView === "overdue" && (
+                <OverdueComponent
+                  tasks={tasks.filter((task) => {
+                    const today = new Date();
+                    return new Date(task.dueDate) < today;
+                  })}
+                  onEditTask={handleEditTask}
+                  onDeleteTask={handleDeleteTask}
+                />
+              )}
+
+              {currentView === "highPriority" && (
+                <HighPriorityComponent
+                  tasks={tasks}
+                  onEditTask={handleEditTask}
+                  onDeleteTask={handleDeleteTask}
+                />
+              )}
             </div>
+
             <div className="col-lg-3">
               <CalendarWidget />
             </div>

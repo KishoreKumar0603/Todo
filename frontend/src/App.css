@@ -1,0 +1,25 @@
+.sidebar-fixed {
+  width: 250px; /* set your desired width */
+  min-width: 250px;
+  max-width: 250px;
+}
+
+.nav-link{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.box-fix{
+  background-color: var(--theme-prim-blue);
+  color: var(--theme-prim-white);
+}
+.text-prim{
+  color: var(--theme-prim-blue);
+}
+.btn-for-add:hover{
+  background-color: var(--theme-prim-blue);
+  opacity: 0.8;
+  color: var(--theme-prim-white);
+}
