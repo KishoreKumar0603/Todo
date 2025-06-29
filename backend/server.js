@@ -10,6 +10,8 @@ import cors from 'cors';
 import taskRoutes from "./routes/taskRoutes.js";
 dotenv.config();
 
+import MongoStore from "connect-mongo";
+
 const app = express();
 const Port = process.env.PORT || 5000;
 const allowedOrigins = [
@@ -33,12 +35,20 @@ app.use(
 );
 
 app.use(express.json());
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false
-}));
-
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+      collectionName: "sessions",
+    }),
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+    },
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 

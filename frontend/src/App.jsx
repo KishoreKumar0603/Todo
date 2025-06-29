@@ -9,6 +9,7 @@ import {createBrowserRouter,
 } from "react-router-dom";
 import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
+import OAuthSuccess from './OAuthSuccess';
 
 function App() {
 
@@ -23,6 +24,8 @@ function App() {
         } />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/oauth-success" element={<OAuthSuccess />} />
+
       </>
     )
   );
