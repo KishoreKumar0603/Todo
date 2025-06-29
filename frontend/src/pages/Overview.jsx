@@ -26,7 +26,6 @@ const Overview = ({ tasks, onEditTask, onDeleteTask }) => {
   return (
     <div className="container">
       <h3 className="mb-4">Overview</h3>
-
       <div className="row">
         {stats.map((stat, idx) => (
           <div className="col-md-3 mb-3" key={idx}>

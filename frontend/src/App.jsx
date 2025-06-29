@@ -1,5 +1,6 @@
 import './App.css'
 import Login from './pages/Login';
+import RequireAuth from './Contexts/RequireAuth';
 
 import {createBrowserRouter, 
   createRoutesFromElements,
@@ -14,7 +15,12 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        <Route path='/' element={<Dashboard />} />
+      
+      <Route path='/' element={
+          <RequireAuth>
+            <Dashboard />
+          </RequireAuth>
+        } />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
       </>

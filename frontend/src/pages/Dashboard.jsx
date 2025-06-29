@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../Contexts/axiosInstance.js";
-
 import Sidebar from "../assets/components/Sidebar";
 import Topbar from "../assets/components/Topbar";
 import TaskGrid from "../assets/components/TaskGrid";
@@ -10,15 +9,24 @@ import Overview from "./Overview.jsx";
 import DueTodayComponent from "./DueTodayComponent.jsx";
 import HighPriorityComponent from "./HighPriorityComponent.jsx";
 import OverdueComponent from "./OverdueComponent.jsx";
+import ShareTaskModal from "../assets/components/ShareTaskModal.jsx";
+import SharedTask from "./SharedTask.jsx";
+
+import {jwtDecode} from "jwt-decode";
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [currentTask, setCurrentTask] = useState(null);
   const [currentView, setCurrentView] = useState("dashboard"); // default view
+  const [shareTaskId, setShareTaskId] = useState(null);
+  const [loggedInUserId, setLoggedInUserId] = useState(null);
 
   const fetchTasks = async () => {
     try {
-      const res = await axiosInstance.get("/tasks");
+      const token = localStorage.getItem("token");
+      const res = await axiosInstance.get("/tasks", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setTasks(res.data);
     } catch (error) {
       console.error(error);
@@ -27,32 +35,42 @@ const Dashboard = () => {
 
   useEffect(() => {
     document.title = "Todo | Dashboard";
+    const token = localStorage.getItem("token");
+    if(token){
+      const decoded = jwtDecode(token);
+      setLoggedInUserId(decoded.id);
+    }
     fetchTasks();
   }, []);
 
   const handleAddTask = () => {
-    setCurrentTask(null); // clear previous edit data
+    setCurrentTask(null);
     const modal = new bootstrap.Modal(document.getElementById("addTaskModal"));
     modal.show();
   };
 
   const handleSaveTask = async (task) => {
-    try {
-      if (currentTask) {
-        // Edit mode: update existing task
-        await axiosInstance.put(`/tasks/${currentTask._id}`, task);
-      } else {
-        // Add mode: create new task
-        await axiosInstance.post("/tasks", task);
-      }
-      fetchTasks();
-      bootstrap.Modal.getInstance(
-        document.getElementById("addTaskModal")
-      ).hide();
-    } catch (error) {
-      console.error(error);
+  try {
+    const token = localStorage.getItem("token");
+    const config = {
+      headers: { Authorization: `Bearer ${token}` },
+    };
+
+    if (currentTask) {
+      // Edit mode: update existing task
+      await axiosInstance.put(`/tasks/${currentTask._id}`, task, config);
+    } else {
+      // Add mode: create new task
+      await axiosInstance.post("/tasks", task, config);
     }
-  };
+
+    fetchTasks();
+    bootstrap.Modal.getInstance(document.getElementById("addTaskModal")).hide();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
   const handleEditTask = (task) => {
     setCurrentTask(task); // Prefill with task data for editing
@@ -61,12 +79,27 @@ const Dashboard = () => {
   };
 
   const handleDeleteTask = async (taskId) => {
-    try {
-      await axiosInstance.delete(`/tasks/${taskId}`);
-      fetchTasks();
-    } catch (error) {
-      console.error(error);
-    }
+  try {
+    const token = localStorage.getItem("token");
+    const config = {
+      headers: { Authorization: `Bearer ${token}` },
+    };
+
+    await axiosInstance.delete(`/tasks/${taskId}`, config);
+    fetchTasks();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+  const handleShareTask = (task) => {
+    setShareTaskId(task._id);
+  };
+
+  const handleCloseShareModal = () => {
+    setShareTaskId(null);
+    fetchTasks();
   };
 
   return (
@@ -83,6 +116,8 @@ const Dashboard = () => {
                   onAddTask={handleAddTask}
                   onDeleteTask={handleDeleteTask}
                   onEditTask={handleEditTask}
+                  onShare={handleShareTask}
+                  loggedInUserId={loggedInUserId}
                 />
               )}
 
@@ -91,6 +126,14 @@ const Dashboard = () => {
                   tasks={tasks}
                   onEditTask={handleEditTask}
                   onDeleteTask={handleDeleteTask}
+                />
+              )}
+              {currentView === "sharedview" && (
+                <SharedTask
+                  tasks={tasks}
+                  onEditTask={handleEditTask}
+                  onDeleteTask={handleDeleteTask}
+                  loggedInUserId={loggedInUserId}
                 />
               )}
 
@@ -130,7 +173,15 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+
         <AddTaskModal onSave={handleSaveTask} />
+
+        {shareTaskId && (
+          <ShareTaskModal
+            taskId={shareTaskId}
+            onClose={handleCloseShareModal}
+          />
+        )}
       </div>
     </div>
   );

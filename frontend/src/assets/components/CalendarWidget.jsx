@@ -13,14 +13,20 @@ const CalendarWidget = () => {
   ];
 
   const fetchTasksForDate = async (date) => {
-    try {
-      const formattedDate = date.toISOString().split('T')[0];
-      const res = await axiosInstance.get(`/tasks?date=${formattedDate}`);
-      setTasks(res.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  try {
+    const token = localStorage.getItem("token");
+    const config = {
+      headers: { Authorization: `Bearer ${token}` },
+    };
+
+    const formattedDate = date.toISOString().split('T')[0];
+    const res = await axiosInstance.get(`/tasks?date=${formattedDate}`, config);
+    setTasks(res.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
   useEffect(() => {
     fetchTasksForDate(selectedDate);

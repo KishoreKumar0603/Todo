@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import axiosInstance from "../Contexts/axiosInstance";
-import '../assets/styles/pages/login.css';
+import "../assets/styles/pages/login.css";
 
 const SignUp = () => {
   useEffect(() => {
@@ -47,11 +47,9 @@ const SignUp = () => {
 
       console.log(res.data);
 
-      if (res.data.token) {
-        // Auto-login after signup:
-        localStorage.setItem("token", res.data.token);
-        window.alert("Registered successfully! Redirecting to dashboard...");
-        navigate("/");
+      if (res.data.message === "Registered successfully") {
+        window.alert("Registered successfully! Please login to continue.");
+        navigate("/login");
       } else {
         setErr(res.data.error || "Something went wrong.");
       }

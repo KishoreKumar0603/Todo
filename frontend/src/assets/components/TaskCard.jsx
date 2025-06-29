@@ -1,7 +1,7 @@
 import React from "react";
 import { FaExclamationTriangle } from "react-icons/fa";
 
-const TaskCard = ({ task, onEdit, onDelete }) => {
+const TaskCard = ({ task, onEdit, onDelete, onShare, currentUserId }) => {
   const getPriority = (priority) => {
     if (priority === "high")
       return (
@@ -18,9 +18,11 @@ const TaskCard = ({ task, onEdit, onDelete }) => {
     return (
       <span className="text-success d-flex align-items-center">
         <FaExclamationTriangle className="me-1" /> Low
-      </span>
+        </span>
     );
   };
+
+  const isOwnedByUser = (task.owner._id || task.owner) === currentUserId;
 
   return (
     <div className="card mb-2 shadow-sm border-0">
@@ -38,14 +40,26 @@ const TaskCard = ({ task, onEdit, onDelete }) => {
             </button>
             <ul className="dropdown-menu dropdown-menu-end">
               <li>
-                <button className="dropdown-item" onClick={() => onEdit(task)}>
+                <button className="dropdown-item" onClick={() => onEdit(task)}
+                  
+                  disabled={!isOwnedByUser} >
                   Edit
+                </button>
+              </li>
+              <li>
+                <button
+                  className="dropdown-item"
+                  onClick={() => onShare(task)}
+                  disabled={!isOwnedByUser} // disable share for shared tasks
+                >
+                  Share
                 </button>
               </li>
               <li>
                 <button
                   className="dropdown-item text-danger"
                   onClick={() => onDelete(task._id)}
+                  disabled={!isOwnedByUser} 
                 >
                   Delete
                 </button>
@@ -54,12 +68,15 @@ const TaskCard = ({ task, onEdit, onDelete }) => {
           </div>
         </div>
 
-        <p className="card-text text-muted small mb-3">
-          {task.description}
-        </p>
+        <p className="card-text text-muted small mb-3">{task.description}</p>
 
         <div className="d-flex justify-content-between align-items-center">
-          {getPriority(task.priority)}
+          <div className="d-flex align-items-center gap-2">
+            {getPriority(task.priority)}
+            {!isOwnedByUser && (
+              <span className="text-muted small ms-2">(Shared)</span>
+            )}
+          </div>
           <small className="text-muted">
             {new Date(task.dueDate).toISOString().split("T")[0]}
           </small>

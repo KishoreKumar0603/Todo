@@ -40,7 +40,9 @@ const Sidebar = ({ onSelectView }) => {
           </button>
         </li>
         <li>
-          <button className="nav-link text-white w-100">
+          <button className="nav-link text-white w-100"
+            onClick={()=>onSelectView("sharedview")}
+          >
             <RiUserShared2Fill  className="text-white me-2"/>Shared Tasks
           </button>
         </li>

@@ -1,10 +1,9 @@
-import React from "react";
 import TaskCard from "./TaskCard";
 import { IoPlayCircleOutline } from "react-icons/io5";
 import { RiProgress1Line } from "react-icons/ri";
 import { IoCheckmarkDoneCircleOutline, IoBanOutline } from "react-icons/io5"; // Added no task icon
 import { BsListTask } from "react-icons/bs";
-const TaskGrid = ({ tasks, onAddTask, onEditTask, onDeleteTask }) => {
+const TaskGrid = ({ tasks, onAddTask, onEditTask, onDeleteTask, onShare, loggedInUserId }) => {
   const toStart = tasks.filter(
     (t) => t.status === "to_start" || t.status === "pending"
   );
@@ -87,6 +86,8 @@ const TaskGrid = ({ tasks, onAddTask, onEditTask, onDeleteTask }) => {
                     task={task}
                     onEdit={onEditTask}
                     onDelete={onDeleteTask}
+                    onShare={onShare}
+                    currentUserId={loggedInUserId}
                   />
                 ))
               )}

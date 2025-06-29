@@ -19,20 +19,21 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(""); // reset error
+
     try {
       const res = await axiosInstance.post("/users/login", { email, password });
-      console.log(res.data);
+      console.log("Login response:", res.data);
 
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
-        navigate("/"); // navigate to dashboard or home
+        navigate("/"); // navigate to dashboard
       } else {
-        setError(res.data.error || "Something went wrong");
+        setError(res.data.error || "Invalid credentials");
       }
     } catch (error) {
       console.error("Login error:", error);
       setError(
-        error.response?.data?.error || "An error occurred. Please try again."
+        error.response?.data?.error || "Invalid credentials. Please try again."
       );
     }
   };

@@ -43,8 +43,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/users", userRoutes);
-app.use("/auth", authRoutes);
 app.use("/tasks", taskRoutes);
+app.use("/auth", authRoutes);
 
 
 
